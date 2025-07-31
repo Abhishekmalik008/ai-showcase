@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Showcase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Chat animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+        
+        .typing-dots > div {
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        
+        /* Message animations */
+        .message-enter {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+        
+        /* Smooth scrolling */
+        #chat-container {
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: #c1c1c1 #f1f1f1;
+        }
+        
+        /* Input focus styles */
+        #user-input:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            outline: none;
+        }
+        
+        /* Button hover effect */
+        #send-button {
+            transition: all 0.2s ease-in-out;
+        }
+        
+        #send-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        #send-button:active {
+            transform: translateY(0);
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold text-center text-blue-600 mb-8">AI Showcase</h1>
+        
+        <!-- Tabs -->
+        <div class="flex border-b border-gray-300 mb-6">
+            <button class="tab-button py-2 px-4 font-medium text-blue-600 border-b-2 border-blue-600" data-tab="chat">AI Chat</button>
+            <button class="tab-button py-2 px-4 text-gray-600 hover:text-blue-600" data-tab="recommend">Recommendations</button>
+        </div>
+
+        <!-- Chat Tab -->
+        <div id="chat" class="tab-content active">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-semibold">Chat with AI</h2>
+                </div>
+                
+                <div id="chat-container" class="border rounded-lg p-4 h-96 overflow-y-auto mb-4 bg-gray-50">
+                    <div class="flex items-start mb-4">
+                        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-2 flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg shadow-sm max-w-3/4">
+                            <p class="text-gray-800">Hello! I'm your AI assistant. You can ask me anything or try the Recommendations tab for movie suggestions. What would you like to know?</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center">
+                    <input type="text" id="user-input" 
+                           class="flex-1 border border-gray-300 rounded-l-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           placeholder="Type your message here..."
+                           autocomplete="off">
+                    <button id="send-button" 
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+                <p class="text-xs text-gray-500 mt-2">Try asking: What can you do? | Tell me a joke | Recommend a movie</p>
+            </div>
+        </div>
+
+        <!-- Computer Vision Tab -->
+        <div id="vision" class="tab-content">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-semibold mb-4">Image Classification</h2>
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center mb-4">
+                    <img id="preview" class="max-h-64 mx-auto mb-4 hidden">
+                    <input type="file" id="image-upload" accept="image/*" class="hidden">
+                    <button id="upload-button" 
+                            class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        Upload Image
+                    </button>
+                    <p class="text-gray-500 mt-2">or drag and drop an image here</p>
+                </div>
+                <div id="prediction-result" class="mt-4 p-4 bg-gray-50 rounded-lg hidden">
+                    <h3 class="font-semibold mb-2">Prediction Result</h3>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p id="prediction-text" class="font-medium">Loading...</p>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+                                <div id="confidence-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+                            </div>
+                            <p id="confidence-text" class="text-sm text-gray-600 mt-1">Confidence: 0%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Recommendations Tab -->
+        <div id="recommend" class="tab-content">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-semibold mb-4">Recommendations</h2>
+                <button id="get-recommendations" 
+                        class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4">
+                    Get Recommendations
+                </button>
+                <div id="recommendations-container" class="space-y-2">
+                    <!-- Recommendations will be added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                // Update active tab
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.classList.remove('border-blue-600', 'text-blue-600');
+                    btn.classList.add('text-gray-600', 'hover:text-blue-600');
+                });
+                button.classList.add('border-blue-600', 'text-blue-600');
+                button.classList.remove('text-gray-600', 'hover:text-blue-600');
+
+                // Show active tab content
+                const tabId = button.getAttribute('data-tab');
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Enhanced chat functionality
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+
+        // Add typing indicator
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typing-indicator';
+            typingDiv.className = 'flex items-start mb-4';
+            typingDiv.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-2 flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                </div>
+                <div class="bg-white p-3 rounded-lg shadow-sm max-w-3/4">
+                    <div class="typing-dots flex space-x-1">
+                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+                    </div>
+                </div>
+            `;
+            chatContainer.appendChild(typingDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            return typingDiv;
+        }
+
+        // Remove typing indicator
+        function removeTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        // Add message to chat
+        function addMessage(content, isUser, type = 'text') {
+            const chatMessages = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            
+            // Apply different styles based on sender
+            if (isUser) {
+                messageDiv.className = 'flex justify-end mb-4';
+                messageDiv.innerHTML = `
+                    <div class="flex items-end">
+                        <div class="bg-blue-600 text-white rounded-l-lg rounded-br-lg px-4 py-2 max-w-xs md:max-w-md lg:max-w-lg">
+                            <p class="text-sm">${content}</p>
+                        </div>
+                        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center ml-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                    </div>
+                `;
+            } else {
+                messageDiv.className = 'flex mb-4';
+                
+                if (type === 'image') {
+                    // For image responses
+                    messageDiv.innerHTML = `
+                        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-2 flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <div class="bg-gray-200 rounded-r-lg rounded-bl-lg p-4 max-w-xs md:max-w-md lg:max-w-lg">
+                            <p class="text-sm text-gray-600 mb-2">Generated image for: "${content.prompt}"</p>
+                            <img src="${content.url}" alt="Generated image" class="rounded-lg w-full h-auto shadow-sm border border-gray-300">
+                            <div class="mt-2 text-xs text-gray-500">
+                                <button onclick="this.parentElement.parentElement.querySelector('img').classList.toggle('max-h-64')" class="text-blue-600 hover:text-blue-800 mr-2">Toggle Size</button>
+                                <a href="${content.url}" download="generated-image.png" class="text-blue-600 hover:text-blue-800">Download</a>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // For text responses
+                    messageDiv.innerHTML = `
+                        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-2 flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <div class="bg-gray-200 rounded-r-lg rounded-bl-lg px-4 py-2 max-w-xs md:max-w-md lg:max-w-lg">
+                            <p class="text-sm">${content}</p>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Add animation class
+            messageDiv.classList.add('message-enter');
+            
+            // Add to chat
+            chatMessages.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Send message to server
+        async function sendMessage() {
+            const userInput = document.getElementById('user-input');
+            const message = userInput.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message to chat
+            addMessage(message, true);
+            
+            // Clear input
+            userInput.value = '';
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            try {
+                // Send message to server
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message })
+                });
+                
+                const data = await response.json();
+                
+                // Remove typing indicator
+                removeTypingIndicator();
+                
+                // Add bot response to chat based on type
+                if (data.type === 'image') {
+                    addMessage(data, false, 'image');
+                } else {
+                    addMessage(data.content, false, 'text');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                removeTypingIndicator();
+                addMessage("Sorry, I'm having trouble connecting to the server. Please try again later.", false, 'text');
+            }
+        }
+
+        // Event listeners
+        sendButton.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+        
+        // Focus the input field on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            userInput.focus();
+        });
+
+        // Image upload and classification
+        const uploadButton = document.getElementById('upload-button');
+        const imageUpload = document.getElementById('image-upload');
+        const preview = document.getElementById('preview');
+        const predictionResult = document.getElementById('prediction-result');
+        const predictionText = document.getElementById('prediction-text');
+        const confidenceText = document.getElementById('confidence-text');
+
+        uploadButton.addEventListener('click', () => imageUpload.click());
+
+        imageUpload.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                preview.src = event.target.result;
+                preview.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+
+            // Send to server for classification
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('/api/classify', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                // Show prediction result with animation
+                const confidencePercent = (data.confidence * 100).toFixed(2);
+                predictionText.textContent = data.class_name;
+                confidenceText.textContent = `Confidence: ${confidencePercent}%`;
+                
+                // Animate confidence bar
+                const confidenceBar = document.getElementById('confidence-bar');
+                confidenceBar.style.width = '0%';
+                predictionResult.classList.remove('hidden');
+                
+                // Trigger animation after a small delay
+                setTimeout(() => {
+                    confidenceBar.style.width = `${confidencePercent}%`;
+                }, 50);
+            } catch (error) {
+                console.error('Error:', error);
+                predictionText.textContent = 'Error processing image';
+                confidenceText.textContent = '';
+                predictionResult.classList.remove('hidden');
+            }
+        });
+
+        // Drag and drop for image upload
+        const dropArea = uploadButton.parentElement;
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+            dropArea.classList.add('border-blue-500', 'bg-blue-50');
+        }
+
+        function unhighlight() {
+            dropArea.classList.remove('border-blue-500', 'bg-blue-50');
+        }
+
+        dropArea.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files.length > 0) {
+                imageUpload.files = files;
+                const event = new Event('change');
+                imageUpload.dispatchEvent(event);
+            }
+        }
+
+
+
+        // Recommendations
+        const getRecommendationsBtn = document.getElementById('get-recommendations');
+        const recommendationsContainer = document.getElementById('recommendations-container');
+
+        getRecommendationsBtn.addEventListener('click', async () => {
+            try {
+                const response = await fetch('/api/recommend');
+                const data = await response.json();
+                
+                recommendationsContainer.innerHTML = '';
+                data.recommendations.forEach(item => {
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'p-3 bg-gray-50 rounded-lg border border-gray-200';
+                    itemElement.textContent = item;
+                    recommendationsContainer.appendChild(itemElement);
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                recommendationsContainer.innerHTML = '<p class="text-red-500">Error loading recommendations</p>';
+            }
+        });
+    </script>
+</body>
+</html>
