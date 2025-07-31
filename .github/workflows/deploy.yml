@@ -1,0 +1,29 @@
+name: Deploy to Streamlit Cloud
+
+on:
+  push:
+    branches: [ main ]  # Change this to your default branch name if different
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run tests
+        run: |
+          python -m pytest -v
+      - name: Deploy to Streamlit
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          echo "Deployment to Streamlit Cloud will happen automatically when you push to main"
+          echo "Make sure you've connected your GitHub repository to Streamlit Cloud"
